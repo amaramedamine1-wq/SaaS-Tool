@@ -42,7 +42,7 @@ export default function RegisterPage() {
         <input
           type="text"
           placeholder="Name"
-          className="w-full border border-gray-300 rounded-xl p-3"
+          className="w-full border border-gray-300 rounded-xl p-2"
           value={name}
           onChange={(event) => setName(event.target.value)}
           required
