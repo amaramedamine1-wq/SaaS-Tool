@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "docker: up",
+      "type": "shell",
+      "command": "docker compose up -d",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker: down",
+      "type": "shell",
+      "command": "docker compose down",
+      "problemMatcher": []
+    },
+    {
+      "label": "docker: logs postgres",
+      "type": "shell",
+      "command": "docker compose logs -f postgres",
+      "problemMatcher": []
+    },
+    {
+      "label": "prisma: migrate dev",
+      "type": "shell",
+      "command": "npx prisma migrate dev",
+      "problemMatcher": []
+    },
+    {
+      "label": "prisma: studio",
+      "type": "shell",
+      "command": "npx prisma studio",
+      "problemMatcher": []
+    }
+  ]
+}
