@@ -120,3 +120,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Animated subtle gradient background used for login form */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animated-form-bg {
+  background: linear-gradient(120deg, rgba(36,244,238,0.06) 0%, rgba(37,99,235,0.04) 40%, rgba(254,44,85,0.05) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease-in-out infinite;
+  border: 1px solid rgba(255,255,255,0.06);
+}
