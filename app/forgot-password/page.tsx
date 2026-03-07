@@ -2,6 +2,11 @@
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { Mail } from "lucide-react";
+import AuthShell from "@/components/ui/auth-shell";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 
 export default function ForgotPasswordPage() {
@@ -31,32 +36,48 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <form onSubmit={onSubmit} className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-5">
-        <h1 className="text-3xl font-bold">Passwort vergessen</h1>
-        <input
-          type="email"
-          placeholder="E-Mail"
-          className="w-full border border-gray-300 rounded-xl p-3"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
-        {error ? <p className="text-red-600 text-sm">{error}</p> : null}
-        {message ? <p className="text-green-700 text-sm">{message}</p> : null}
-        <button
+    <AuthShell>
+      <div className="mb-6">
+        <h2 className="text-3xl font-bold">Passwort vergessen</h2>
+        <p className="mt-1 text-sm text-black/70">Wir senden dir einen Reset-Link per E-Mail.</p>
+      </div>
+
+      <form onSubmit={onSubmit} className="space-y-5" noValidate>
+        <div className="space-y-2">
+          <Label htmlFor="email" className="text-black/85">
+            E-Mail
+          </Label>
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-black/60" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="name@firma.de"
+              className="h-11 border-black/25 bg-white/70 pl-10 text-black placeholder:text-black/55"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        {error ? <p className="rounded-md border border-red-400/35 bg-red-950/40 px-3 py-2 text-sm text-red-200">{error}</p> : null}
+        {message ? <p className="rounded-md border border-emerald-500/35 bg-emerald-950/30 px-3 py-2 text-sm text-emerald-200">{message}</p> : null}
+
+        <Button
           type="submit"
           disabled={loading}
-          className="w-full bg-black text-white rounded-xl p-3 font-semibold disabled:opacity-60"
+          className="h-11 w-full border border-white/20 bg-white text-black font-semibold transition hover:bg-[#25f4ee]"
         >
           {loading ? "Bitte warten..." : "Reset-Link anfordern"}
-        </button>
-        <p className="text-sm text-gray-600">
-          <Link className="hover:underline" href="/login">
+        </Button>
+
+        <p className="text-center text-sm text-black/75">
+          <Link className="font-semibold text-black hover:text-sky-600" href="/login">
             Zurueck zum Login
           </Link>
         </p>
       </form>
-    </main>
+    </AuthShell>
   );
 }

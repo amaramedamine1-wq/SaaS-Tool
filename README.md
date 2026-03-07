@@ -49,6 +49,12 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - `BETTER_AUTH_SECRET`
 - `BETTER_AUTH_URL`
 - `NEXT_PUBLIC_BETTER_AUTH_URL`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_SECURE` (optional, `true`/`false`)
+- `SMTP_USER`
+- `SMTP_PASS`
+- `MAIL_FROM` (optional)
 
 2. Install dependencies:
 
@@ -92,6 +98,10 @@ Open Command Palette -> `Tasks: Run Task` and use:
 - `BETTER_AUTH_SECRET`
 - `BETTER_AUTH_URL`
 - `NEXT_PUBLIC_BETTER_AUTH_URL`
+- `SMTP_HOST`
+- `SMTP_PORT`
+- `SMTP_USER`
+- `SMTP_PASS`
 
 2. Run the app:
 

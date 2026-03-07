@@ -133,3 +133,154 @@
   animation: gradientShift 10s ease-in-out infinite;
   border: 1px solid rgba(255,255,255,0.06);
 }
+
+@keyframes driftGrid {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(14px, 10px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes floatGlow {
+  0% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-14px) scale(1.04); }
+  100% { transform: translateY(0px) scale(1); }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.landing-grid-animated {
+  animation: driftGrid 12s ease-in-out infinite;
+}
+
+.landing-glow-animated {
+  animation: floatGlow 8s ease-in-out infinite;
+}
+
+.landing-enter {
+  animation: fadeUp 700ms ease-out both;
+}
+
+.landing-enter-delay {
+  animation: fadeUp 850ms ease-out 120ms both;
+}
+
+.cloud {
+  position: absolute;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 35%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.65));
+  filter: blur(10px);
+  opacity: 0.7;
+}
+
+.cloud-a {
+  width: 340px;
+  height: 120px;
+  top: 10%;
+  left: -120px;
+  animation: driftA 26s linear infinite;
+}
+
+.cloud-b {
+  width: 420px;
+  height: 145px;
+  top: 42%;
+  left: -180px;
+  animation: driftB 34s linear infinite;
+}
+
+.cloud-c {
+  width: 300px;
+  height: 110px;
+  bottom: 10%;
+  left: -140px;
+  animation: driftC 30s linear infinite;
+}
+
+@keyframes driftA {
+  from { transform: translateX(0); }
+  to { transform: translateX(130%); }
+}
+
+@keyframes driftB {
+  from { transform: translateX(0); }
+  to { transform: translateX(150%); }
+}
+
+@keyframes driftC {
+  from { transform: translateX(0); }
+  to { transform: translateX(140%); }
+}
+
+.moto-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(36px);
+  opacity: 0.6;
+  animation: motoFloat 8s ease-in-out infinite;
+}
+
+.moto-glow-a {
+  width: 280px;
+  height: 280px;
+  left: -80px;
+  top: 12%;
+  background: rgba(34, 211, 238, 0.4);
+}
+
+.moto-glow-b {
+  width: 360px;
+  height: 360px;
+  right: -120px;
+  bottom: 6%;
+  background: rgba(59, 130, 246, 0.35);
+  animation-delay: 0.9s;
+}
+
+.moto-track {
+  position: absolute;
+  left: -20%;
+  width: 140%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.95), transparent);
+  filter: drop-shadow(0 0 12px rgba(34, 211, 238, 0.8));
+  animation: motoDash 3.8s linear infinite;
+}
+
+.moto-track-a {
+  top: 34%;
+  animation-duration: 3.3s;
+}
+
+.moto-track-b {
+  top: 52%;
+  animation-duration: 4.1s;
+  animation-delay: 0.6s;
+}
+
+.moto-track-c {
+  top: 70%;
+  animation-duration: 3.7s;
+  animation-delay: 1.2s;
+}
+
+@keyframes motoDash {
+  from { transform: translateX(-12%); opacity: 0.15; }
+  45% { opacity: 1; }
+  to { transform: translateX(12%); opacity: 0.15; }
+}
+
+@keyframes motoFloat {
+  0% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-14px) scale(1.05); }
+  100% { transform: translateY(0px) scale(1); }
+}

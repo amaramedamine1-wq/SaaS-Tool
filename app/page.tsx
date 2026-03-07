@@ -1,128 +1,99 @@
 "use client";
 
-import Sidebar from "@/components/ui/sidebar";
+import { type TouchEvent, useEffect, useRef, useState } from "react";
 import AIChat from "@/components/ui/ai-chat";
-import { FC } from "react";
-import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 
-// Desktop Sidebar (improved spacing, typography, focus styles)
-const DesktopSidebar: FC = () => (
-  <aside className="hidden md:flex flex-col fixed top-0 left-0 w-64 h-screen bg-white shadow-xl border-r border-gray-200 p-8">
-    <h2 className="text-3xl font-bold tracking-tight mb-10">Menü</h2>
-    <nav className="flex flex-col space-y-5 text-lg font-medium">
-      <a href="#hero" className="hover:text-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-2">Home</a>
-      <a href="#menu" className="hover:text-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-2">Menu</a>
-      <a href="#ai" className="hover:text-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-2">Empfehlungen</a>
-      <a href="#videos" className="hover:text-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-2">Videos</a>
-      <a href="#contact" className="hover:text-indigo-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 pr-2">Kontakt</a>
-    </nav>
-  </aside>
-);
-
-// Main Page
 export default function LandingPage() {
   const { data: session, isPending } = authClient.useSession();
+  const [bgIndex, setBgIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const backgrounds = ["/caract.mp4", "/moto.mp4", "/car.mp4"];
 
   const onLogout = async () => {
     await authClient.signOut();
     window.location.href = "/login";
   };
 
+  const onTouchStart = (event: TouchEvent<HTMLElement>) => {
+    touchStartX.current = event.changedTouches[0]?.clientX ?? null;
+  };
+
+  const onTouchEnd = (event: TouchEvent<HTMLElement>) => {
+    if (touchStartX.current === null) return;
+
+    const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
+    const delta = endX - touchStartX.current;
+    touchStartX.current = null;
+
+    if (Math.abs(delta) < 40) return;
+
+    if (delta < 0) {
+      setBgIndex((prev) => (prev + 1) % backgrounds.length);
+      return;
+    }
+
+    setBgIndex((prev) => (prev - 1 + backgrounds.length) % backgrounds.length);
+  };
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setBgIndex((prev) => (prev + 1) % backgrounds.length);
+    }, 6000);
+
+    return () => window.clearInterval(timer);
+  }, [backgrounds.length]);
+
   return (
-    <>
-      <Sidebar />
-      <DesktopSidebar />
+    <main
+      className="relative min-h-screen overflow-hidden text-cyan-100 px-4 py-10 md:px-8"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      <video
+        className="absolute inset-0 h-full w-full object-cover"
+        src={backgrounds[bgIndex]}
+        autoPlay
+        muted
+        loop
+        playsInline
+        key={backgrounds[bgIndex]}
+      />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.28),rgba(15,23,42,0.9)_45%,rgba(2,6,23,0.96))]" />
+      <div className="landing-glow-animated absolute -left-24 top-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+      <div className="landing-glow-animated absolute -right-28 bottom-10 h-80 w-80 rounded-full bg-blue-500/20 blur-3xl" />
+      <div className="landing-grid-animated absolute inset-0 opacity-35 bg-[linear-gradient(rgba(34,211,238,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.2)_1px,transparent_1px)] bg-[size:42px_42px]" />
 
-      <main className="ml-0 md:ml-64">
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-3">
-          {session?.user?.role === "admin" ? (
-            <Link href="/admin" className="bg-white border border-gray-300 rounded-xl px-4 py-2 text-sm">
-              Admin
-            </Link>
-          ) : null}
-          {!isPending && session ? (
-            <button
-              onClick={onLogout}
-              className="bg-black text-white rounded-xl px-4 py-2 text-sm font-semibold"
-            >
-              Logout
-            </button>
-          ) : null}
+      {!isPending && session ? (
+        <div className="fixed right-4 top-4 z-20">
+          <button
+            onClick={onLogout}
+            className="rounded-xl border border-cyan-700 bg-slate-900/90 px-4 py-2 text-sm font-semibold text-cyan-100 hover:bg-slate-800"
+          >
+            Ciao
+          </button>
         </div>
+      ) : null}
 
-        {/* HERO */}
-        <section id="hero" className="relative h-screen overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black flex items-center justify-center text-white px-6 text-center">
-            <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight leading-tight max-w-3xl">
-              Willkommen im Restaurant
-            </h1>
-          </div>
-        </section>
-
-        {/* MENU */}
-        <section id="menu" className="py-24 px-8 bg-gray-50">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-5xl font-bold text-center tracking-tight mb-16">
-              Unsere Spezialitäten
-            </h2>
-
-            <div className="grid md:grid-cols-3 gap-10">
-              {[{
-                title: "Pasta Carbonara",
-                desc: "Klassische italienische Pasta mit frischen Zutaten."
-              },{
-                title: "Vegane Bowl",
-                desc: "Frische, gesunde Zutaten – ideal für Veganer."
-              },{
-                title: "Signature Burger",
-                desc: "Saftig, lecker und nur bei uns erhältlich."
-              }].map((item) => (
-                <div key={item.title} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-                  <h3 className="text-3xl font-semibold mb-4">{item.title}</h3>
-                  <p className="text-gray-600 text-lg leading-relaxed">{item.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* AI CHAT */}
-        <section id="ai" className="py-24 px-8 bg-white border-t border-gray-200">
-          <h2 className="text-5xl font-bold text-center tracking-tight mb-16">
-            AI Menü-Assistent
-          </h2>
-          <div className="max-w-4xl mx-auto">
-            <AIChat />
-          </div>
-        </section>
-
-        {/* VIDEOS */}
-        <section id="videos" className="py-24 px-8 bg-gray-50 border-t border-gray-200">
-          <h2 className="text-5xl font-bold text-center tracking-tight mb-10">Videos</h2>
-          <p className="text-center text-gray-500 text-lg max-w-xl mx-auto">
-            Füge hier Videos ein, wenn welche vorhanden sind.
-          </p>
-        </section>
-
-        {/* CONTACT */}
-        <section id="contact" className="py-24 px-8 bg-white border-t border-gray-200">
-          <h2 className="text-5xl font-bold text-center tracking-tight mb-16">
-            Kontakt & Reservierung
-          </h2>
-
-          <form className="max-w-2xl mx-auto grid gap-8">
-            <input type="text" placeholder="Name" className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-indigo-500" />
-            <input type="email" placeholder="Email" className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-indigo-500" />
-            <textarea placeholder="Nachricht" rows={6} className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-indigo-500"></textarea>
-
-            <button className="bg-indigo-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-indigo-700 transition-colors">
-              Senden
-            </button>
-          </form>
-        </section>
-
-      </main>
-    </>
+      <div className="relative z-10 mx-auto max-w-4xl">
+        <div className="mb-6 flex justify-center gap-2">
+          {backgrounds.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setBgIndex(idx)}
+              aria-label={`Background ${idx + 1}`}
+              className={`h-2.5 w-10 rounded-full transition ${bgIndex === idx ? "bg-cyan-300" : "bg-cyan-900/70"}`}
+            />
+          ))}
+        </div>
+        <h1 className="landing-enter text-center text-4xl md:text-6xl font-extrabold tracking-tight mb-8">
+          Welcome
+        </h1>
+        <div className="landing-enter-delay rounded-2xl border border-cyan-900 bg-slate-900/70 p-4 md:p-6 shadow-2xl">
+          <AIChat />
+        </div>
+      </div>
+    </main>
   );
 }

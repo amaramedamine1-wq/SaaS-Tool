@@ -1,3 +1,4 @@
+import AuthShell from "@/components/ui/auth-shell";
 import ResetPasswordForm from "./reset-password-form";
 
 type ResetPasswordPageProps = {
@@ -9,8 +10,8 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
   const token = params.token ?? "";
 
   return (
-    <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+    <AuthShell>
       <ResetPasswordForm token={token} />
-    </main>
+    </AuthShell>
   );
 }
