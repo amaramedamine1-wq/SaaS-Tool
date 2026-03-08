@@ -7,6 +7,23 @@ const bodySchema = z.object({
   question: z.string().min(1).max(500),
 });
 
+function extractSuggestions(text: string): string[] {
+  const lines = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => line.replace(/^[-*]\s+/, "").replace(/^\d+[\).\-\s]+/, "").trim())
+    .filter((line) => line.length >= 8);
+
+  if (lines.length >= 2) return lines.slice(0, 6);
+
+  return text
+    .split(/[.!?]\s+/)
+    .map((part) => part.trim())
+    .filter((part) => part.length >= 8)
+    .slice(0, 4);
+}
+
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: request.headers });
   if (!session) {
@@ -30,14 +47,15 @@ export async function POST(request: Request) {
         {
           role: "system",
           content:
-            "You are a restaurant menu assistant. Give short, practical suggestions in German.",
+            "You are an AI prompt generator for image and video creation. Reply in English. Provide 4 to 6 concise cinematic prompts, one per line, based on the user's topic.",
         },
         { role: "user", content: parsed.data.question },
       ],
     });
 
-    const answer = response.output_text?.trim() || "Keine Antwort verfuegbar.";
-    return NextResponse.json({ answer });
+    const answer = response.output_text?.trim() || "No answer available.";
+    const suggestions = extractSuggestions(answer);
+    return NextResponse.json({ answer, suggestions });
   } catch {
     return NextResponse.json({ error: "Failed to process AI request." }, { status: 500 });
   }

@@ -55,6 +55,16 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - `SMTP_USER`
 - `SMTP_PASS`
 - `MAIL_FROM` (optional)
+- `OPENAI_IMAGE_MODEL` (optional, default `gpt-image-1`)
+- `GOOGLE_CLOUD_PROJECT`
+- `GOOGLE_CLOUD_LOCATION` (optional, default `us-central1`)
+- `VERTEX_VIDEO_MODEL` (optional)
+- `GOOGLE_APPLICATION_CREDENTIALS` (recommended for Vertex auth)
+- `FREE_IMAGE_LIMIT` (optional, default `10`)
+- `FREE_VIDEO_LIMIT` (optional, default `1`)
+- `PRO_IMAGE_LIMIT` (optional, default `200`)
+- `PRO_VIDEO_LIMIT` (optional, default `20`)
+- `PRO_PRICE_EUR` (optional, default `19`)
 
 2. Install dependencies:
 

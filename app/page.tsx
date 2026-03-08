@@ -90,6 +90,9 @@ export default function LandingPage() {
         <h1 className="landing-enter text-center text-4xl md:text-6xl font-extrabold tracking-tight mb-8">
           Welcome
         </h1>
+        <p className="landing-enter-delay -mt-5 mb-8 text-center text-sm md:text-base text-cyan-100/85">
+          Chat with bot and try free trial: 1 free video + 10 free images.
+        </p>
         <div className="landing-enter-delay rounded-2xl border border-cyan-900 bg-slate-900/70 p-4 md:p-6 shadow-2xl">
           <AIChat />
         </div>

@@ -12,6 +12,10 @@ export const authClient = createAuthClient({
           type: "string",
           required: false,
         },
+        plan: {
+          type: "string",
+          required: false,
+        },
       },
     }),
     adminClient(),

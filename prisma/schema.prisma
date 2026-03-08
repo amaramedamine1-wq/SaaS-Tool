@@ -15,6 +15,10 @@ model User {
   emailVerified Boolean   @default(false)
   image         String?
   role          String    @default("user")
+  plan          String    @default("free")
+  usageMonthKey String    @default("")
+  imageUsed     Int       @default(0)
+  videoUsed     Int       @default(0)
   banned        Boolean?  @default(false)
   banReason     String?
   banExpires    DateTime?
@@ -22,6 +26,27 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
+  generations   Generation[]
+}
+
+model Generation {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind              String   @default("video")
+  provider          String   @default("vertex-ai")
+  operationName     String?  @unique
+  prompt            String
+  status            String   @default("submitted")
+  reason            String?
+  videoUrl          String?
+  videoGcsUri       String?
+  persistedVideoUrl String?
+  payload           Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId, createdAt])
 }
 
 model Session {
