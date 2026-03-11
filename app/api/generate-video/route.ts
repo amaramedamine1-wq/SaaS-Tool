@@ -6,7 +6,6 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { UsageLimitError, consumeGenerationQuota, refundGenerationQuota } from "@/lib/usage";
-import { persistVideoForOperation } from "@/lib/video-storage";
 
 const bodySchema = z.object({
   prompt: z.string().min(3).max(1000),
@@ -189,10 +188,20 @@ export async function POST(request: Request) {
   const project = process.env.GOOGLE_CLOUD_PROJECT;
   const location = process.env.GOOGLE_CLOUD_LOCATION ?? "us-central1";
   const model = process.env.VERTEX_VIDEO_MODEL ?? "veo-3.0-generate-preview";
+  const storageUri = process.env.VERTEX_VIDEO_STORAGE_URI ?? "";
   const credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS ?? "";
 
   if (!project) {
     return NextResponse.json({ error: "GOOGLE_CLOUD_PROJECT is missing." }, { status: 500 });
+  }
+  if (!storageUri.startsWith("gs://")) {
+    return NextResponse.json(
+      {
+        error: "VERTEX_VIDEO_STORAGE_URI is missing or invalid.",
+        hint: "Set VERTEX_VIDEO_STORAGE_URI to a writable gs://bucket/path prefix.",
+      },
+      { status: 500 },
+    );
   }
 
   // Allow ADC fallback when service-account key files are blocked by org policy.
@@ -221,6 +230,7 @@ export async function POST(request: Request) {
           durationSeconds: parsed.data.durationSeconds,
           sampleCount: 1,
           aspectRatio: "16:9",
+          storageUri,
         },
       }),
     });
@@ -304,21 +314,8 @@ export async function POST(request: Request) {
       }
     }
 
-    let persistedVideoUrl = "";
-    let persistError = "";
-    if (done && (videoUrl || videoGcsUri || videoBytesBase64)) {
-      try {
-        persistedVideoUrl = await persistVideoForOperation({
-          operationName,
-          videoUrl: videoUrl || undefined,
-          videoGcsUri: videoGcsUri || undefined,
-          videoBytesBase64: videoBytesBase64 || undefined,
-          accessToken,
-        });
-      } catch (error) {
-        persistError = error instanceof Error ? error.message : "unknown persist error";
-      }
-    }
+    const persistedVideoUrl = "";
+    const persistError = "";
     const reason = done ? getGenerationReason(finalPayload) : "";
     let generationStatus = done
       ? persistedVideoUrl || videoUrl || videoGcsUri || videoBytesBase64

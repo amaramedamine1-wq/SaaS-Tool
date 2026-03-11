@@ -5,7 +5,6 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { refundGenerationQuota } from "@/lib/usage";
-import { persistVideoForOperation } from "@/lib/video-storage";
 
 const bodySchema = z.object({
   operationName: z.string().min(10),
@@ -210,21 +209,8 @@ export async function POST(request: Request) {
 
     const done = Boolean((pollPayload as { done?: boolean }).done);
     const urls = extractVideoUrls(pollPayload);
-    let persistedVideoUrl = "";
-    let persistError = "";
-    if (done && (urls.videoUrl || urls.videoGcsUri || urls.videoBytesBase64)) {
-      try {
-        persistedVideoUrl = await persistVideoForOperation({
-          operationName: parsed.data.operationName,
-          videoUrl: urls.videoUrl || undefined,
-          videoGcsUri: urls.videoGcsUri || undefined,
-          videoBytesBase64: urls.videoBytesBase64 || undefined,
-          accessToken,
-        });
-      } catch (error) {
-        persistError = error instanceof Error ? error.message : "unknown persist error";
-      }
-    }
+    const persistedVideoUrl = "";
+    const persistError = "";
     const reason = done ? getGenerationReason(pollPayload) : "";
     let generationStatus = done
       ? persistedVideoUrl || urls.videoUrl || urls.videoGcsUri || urls.videoBytesBase64

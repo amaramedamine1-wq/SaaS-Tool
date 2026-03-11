@@ -59,6 +59,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 - `GOOGLE_CLOUD_PROJECT`
 - `GOOGLE_CLOUD_LOCATION` (optional, default `us-central1`)
 - `VERTEX_VIDEO_MODEL` (optional)
+- `VERTEX_VIDEO_STORAGE_URI` (required for Veo video output, e.g. `gs://your-bucket/veo-output/`)
 - `GOOGLE_APPLICATION_CREDENTIALS` (recommended for Vertex auth)
 - `FREE_IMAGE_LIMIT` (optional, default `10`)
 - `FREE_VIDEO_LIMIT` (optional, default `1`)
